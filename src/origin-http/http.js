@@ -6,13 +6,13 @@ import path from 'node:path'
 const __basepath = path.join(import.meta.dirname,'..', '..')
 
 const server = http.createServer((req, res) => {
-  let reqData = ''
+  let reqData = []
   const type = req.headers['content-type']
   res.statusCode = 200
   
   const fullUrl = new URL(req.url, 'http://localhost:7777')
   req.on('data', (chunk) => {''
-    reqData += chunk
+    reqData.push(chunk)
   })
   req.on('error', (err) => {
     res.statusCode = 500
@@ -20,7 +20,7 @@ const server = http.createServer((req, res) => {
   })
   req.on('end', () => {
     try {
-      console.log(reqData);
+      console.log(Buffer.concat(reqData).toString());
       
       switch (fullUrl.pathname) {
         case '/json':
